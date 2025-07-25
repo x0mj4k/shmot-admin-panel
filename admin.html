@@ -22,27 +22,27 @@
         </div>
         <div class="form-group">
             <label for="category">Категория</label>
-            <input type="text" id="category" name="name" required>
+            <input type="text" id="category" name="category" required>
         </div>
         <div class="form-group">
             <label for="price">Цена (₽)</label>
-            <input type="number" id="price" rname="name" equired>
+            <input type="number" id="price" name="price" required>
         </div>
         <div class="form-group">
             <label for="stock">Остаток (шт.)</label>
-            <input type="number" id="stock" name="name" required>
+            <input type="number" id="stock" name="stock" required>
         </div>
         <div class="form-group">
             <label for="image_url">URL изображения</label>
-            <input type="url" id="image_url" name="name" required>
+            <input type="url" id="image_url" name="image_url" required>
         </div>
         <div class="form-group">
             <label for="description">Описание</label>
-            <textarea id="description" name="name" rows="3"></textarea>
+            <textarea id="description" name="description" rows="3"></textarea>
         </div>
         <div class="form-group">
             <label for="sizes">Размеры (через запятую)</label>
-            <input type="text" name="name" id="sizes">
+            <input type="text" id="sizes" name="sizes">
         </div>
     </form>
 
@@ -64,7 +64,6 @@
                     return;
                 }
                 const data = {};
-                // Собираем данные только из заполненных полей
                 new FormData(form).forEach((value, key) => {
                     if (value) {
                         data[key] = value;

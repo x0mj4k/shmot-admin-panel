@@ -9,7 +9,7 @@
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; }
         input, textarea, select { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid var(--tg-theme-hint-color); border-radius: 5px; background-color: var(--tg-theme-secondary-bg-color); color: var(--tg-theme-text-color); }
-        button { width: 100%; padding: 15px; font-size: 16px; border: none; border-radius: 5px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); cursor: pointer; }
+        button { display: none; } /* Сразу прячем кнопку через CSS */
     </style>
 </head>
 <body>
@@ -47,45 +47,42 @@
     </form>
 
     <button id="save-button">Сохранить</button>
-
-        <script src="https://telegram.org/js/telegram-web-app.js"></script>
-        <script>
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
             const tg = window.Telegram.WebApp;
             const form = document.getElementById('product-form');
 
-            // Настраиваем главную кнопку Telegram
             tg.MainButton.setText('Сохранить');
-            tg.MainButton.disable(); // Изначально деактивирована
-            tg.MainButton.show();    // Но всегда видима
+            tg.MainButton.disable();
+            tg.MainButton.show();
 
-            // Обработчик нажатия на главную кнопку
             tg.MainButton.onClick(function() {
-                const data = {
-                    name: document.getElementById('name').value,
-                    category: document.getElementById('category').value,
-                    price: document.getElementById('price').value,
-                    stock: document.getElementById('stock').value,
-                    image_url: document.getElementById('image_url').value,
-                    description: document.getElementById('description').value,
-                    sizes: document.getElementById('sizes').value,
-                };
-                // Отправляем данные боту
+                if (!form.checkValidity()) {
+                    tg.showAlert('Пожалуйста, заполните все обязательные поля.');
+                    return;
+                }
+                const data = {};
+                // Собираем данные только из заполненных полей
+                new FormData(form).forEach((value, key) => {
+                    if (value) {
+                        data[key] = value;
+                    }
+                });
                 tg.sendData(JSON.stringify(data));
             });
 
-            // Слушатель событий на форме для активации/деактивации кнопки
             form.addEventListener('input', function() {
                 if (form.checkValidity()) {
-                    tg.MainButton.enable(); // Активируем, если все поля валидны
+                    tg.MainButton.enable();
                 } else {
-                    tg.MainButton.disable(); // Деактивируем, если есть ошибки
+                    tg.MainButton.disable();
                 }
             });
             
-            // Прячем стандартную HTML-кнопку
-            document.getElementById('save-button').style.display = 'none';
-            // Расширяем Mini App на весь экран
             tg.expand();
-        </script>
+        });
+    </script>
 </body>
 </html>

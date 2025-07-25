@@ -48,16 +48,18 @@
 
     <button id="save-button">Сохранить</button>
 
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script>
-        const tg = window.Telegram.WebApp;
-        const saveButton = document.getElementById('save-button');
-        const form = document.getElementById('product-form');
+        <script src="https://telegram.org/js/telegram-web-app.js"></script>
+        <script>
+            const tg = window.Telegram.WebApp;
+            const form = document.getElementById('product-form');
 
-        // Говорим Telegram, что наша кнопка "Сохранить" будет главной
-        tg.MainButton.setText('Сохранить');
-        tg.MainButton.onClick(function() {
-            if (form.checkValidity()) {
+            // Настраиваем главную кнопку Telegram
+            tg.MainButton.setText('Сохранить');
+            tg.MainButton.disable(); // Изначально деактивирована
+            tg.MainButton.show();    // Но всегда видима
+
+            // Обработчик нажатия на главную кнопку
+            tg.MainButton.onClick(function() {
                 const data = {
                     name: document.getElementById('name').value,
                     category: document.getElementById('category').value,
@@ -67,27 +69,23 @@
                     description: document.getElementById('description').value,
                     sizes: document.getElementById('sizes').value,
                 };
-                // Отправляем данные в JSON-формате боту
+                // Отправляем данные боту
                 tg.sendData(JSON.stringify(data));
-            } else {
-                tg.showAlert('Пожалуйста, заполните все обязательные поля.');
-            }
-        });
+            });
 
-        // Показываем/скрываем кнопку в зависимости от заполнения формы
-        form.addEventListener('input', function() {
-            if (form.checkValidity()) {
-                tg.MainButton.show();
-            } else {
-                tg.MainButton.hide();
-            }
-        });
-
-        // Скрываем обычную HTML-кнопку, используем кнопку Telegram
-        saveButton.style.display = 'none';
-
-        // Расширяем Mini App на весь экран
-        tg.expand();
-    </script>
+            // Слушатель событий на форме для активации/деактивации кнопки
+            form.addEventListener('input', function() {
+                if (form.checkValidity()) {
+                    tg.MainButton.enable(); // Активируем, если все поля валидны
+                } else {
+                    tg.MainButton.disable(); // Деактивируем, если есть ошибки
+                }
+            });
+            
+            // Прячем стандартную HTML-кнопку
+            document.getElementById('save-button').style.display = 'none';
+            // Расширяем Mini App на весь экран
+            tg.expand();
+        </script>
 </body>
 </html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 15px; background-color: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input, textarea, select { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid var(--tg-theme-hint-color); border-radius: 5px; background-color: var(--tg-theme-secondary-bg-color); color: var(--tg-theme-text-color); }
+        button { width: 100%; padding: 15px; font-size: 16px; border: none; border-radius: 5px; background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h2>Карточка товара</h2>
+    <form id="product-form">
+        <div class="form-group">
+            <label for="name">Название</label>
+            <input type="text" id="name" required>
+        </div>
+        <div class="form-group">
+            <label for="category">Категория</label>
+            <input type="text" id="category" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Цена (₽)</label>
+            <input type="number" id="price" required>
+        </div>
+        <div class="form-group">
+            <label for="stock">Остаток (шт.)</label>
+            <input type="number" id="stock" required>
+        </div>
+        <div class="form-group">
+            <label for="image_url">URL изображения</label>
+            <input type="url" id="image_url" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Описание</label>
+            <textarea id="description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="sizes">Размеры (через запятую)</label>
+            <input type="text" id="sizes">
+        </div>
+    </form>
+
+    <button id="save-button">Сохранить</button>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        const tg = window.Telegram.WebApp;
+        const saveButton = document.getElementById('save-button');
+        const form = document.getElementById('product-form');
+
+        // Говорим Telegram, что наша кнопка "Сохранить" будет главной
+        tg.MainButton.setText('Сохранить');
+        tg.MainButton.onClick(function() {
+            if (form.checkValidity()) {
+                const data = {
+                    name: document.getElementById('name').value,
+                    category: document.getElementById('category').value,
+                    price: document.getElementById('price').value,
+                    stock: document.getElementById('stock').value,
+                    image_url: document.getElementById('image_url').value,
+                    description: document.getElementById('description').value,
+                    sizes: document.getElementById('sizes').value,
+                };
+                // Отправляем данные в JSON-формате боту
+                tg.sendData(JSON.stringify(data));
+            } else {
+                tg.showAlert('Пожалуйста, заполните все обязательные поля.');
+            }
+        });
+
+        // Показываем/скрываем кнопку в зависимости от заполнения формы
+        form.addEventListener('input', function() {
+            if (form.checkValidity()) {
+                tg.MainButton.show();
+            } else {
+                tg.MainButton.hide();
+            }
+        });
+
+        // Скрываем обычную HTML-кнопку, используем кнопку Telegram
+        saveButton.style.display = 'none';
+
+        // Расширяем Mini App на весь экран
+        tg.expand();
+    </script>
+</body>
+</html>

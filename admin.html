@@ -91,5 +91,17 @@
             tg.expand();
         });
     </script>
+        </script>
+
+    <hr>
+    <button id="test-button" style="width:100%; padding: 15px; background-color: red; color: white; border: none; border-radius: 5px; font-weight: bold;">
+        !!! ТЕСТОВАЯ КНОПКА ОТПРАВКИ !!!
+    </button>
+    <script>
+    document.getElementById('test-button').onclick = function() {
+        // Отправляем простые тестовые данные
+        Telegram.WebApp.sendData(JSON.stringify({ test_key: "hello from test button" }));
+    };
+    </script>
 </body>
 </html>
